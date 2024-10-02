@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,11 +58,30 @@
     <form id="medicare-form">
       <label for="doctor-visits">How many doctor visits do you have annually?</label>
       <input type="number" id="doctor-visits" name="doctor-visits" required>
-      
-      <label for="prosthetic-needs">Do you expect frequent prosthetic adjustments?</label>
+
+      <label for="location">Are you in an area with a broad network of Medicare Advantage providers?</label>
+      <select id="location" name="location" required>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+
+      <label for="chronic-history">Do you have chronic conditions that require frequent specialist visits?</label>
+      <select id="chronic-history" name="chronic-history" required>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+
+      <label for="prosthetic-needs">Do you expect frequent prosthetic adjustments or new devices?</label>
       <select id="prosthetic-needs" name="prosthetic-needs" required>
         <option value="yes">Yes</option>
         <option value="no">No</option>
+      </select>
+
+      <label for="lifestyle">How often do you travel or live in multiple locations throughout the year?</label>
+      <select id="lifestyle" name="lifestyle" required>
+        <option value="rarely">Rarely</option>
+        <option value="occasionally">Occasionally</option>
+        <option value="frequently">Frequently</option>
       </select>
 
       <button type="submit">Get Recommendation</button>
@@ -77,15 +95,25 @@
 
       // Gather inputs
       const doctorVisits = document.getElementById('doctor-visits').value;
+      const location = document.getElementById('location').value;
+      const chronicHistory = document.getElementById('chronic-history').value;
       const prostheticNeeds = document.getElementById('prosthetic-needs').value;
+      const lifestyle = document.getElementById('lifestyle').value;
 
       // Decision logic
       let recommendation = '';
 
-      if (prostheticNeeds === 'yes' || doctorVisits > 10) {
-        recommendation = 'Traditional Medicare with Medigap may be the better option for you because of the flexibility in provider networks.';
-      } else {
-        recommendation = 'Medicare Advantage may be a good option for you, especially if you prefer lower premiums and can work within a network of providers.';
+      // Decision factors for Medicare Advantage
+      if (location === 'yes' && chronicHistory === 'no' && prostheticNeeds === 'no' && lifestyle === 'rarely') {
+        recommendation = 'Medicare Advantage may be a good option for you, as it provides network coverage and lower premiums for individuals with less complex medical needs and limited travel.';
+      } 
+      // Decision factors for Traditional Medicare + Medigap
+      else if (location === 'no' || chronicHistory === 'yes' || prostheticNeeds === 'yes' || lifestyle === 'frequently') {
+        recommendation = 'Traditional Medicare with Medigap may be a better choice for you because of its flexibility in provider networks, comprehensive coverage, and better suitability for individuals with more complex medical needs or frequent travel.';
+      } 
+      // Mixed recommendations based on user inputs
+      else {
+        recommendation = 'Both Medicare Advantage and Traditional Medicare + Medigap could work for you. If you value flexibility and coverage, consider Medigap. If you prefer lower premiums and can stay within a provider network, Medicare Advantage might be suitable.';
       }
 
       // Display result
